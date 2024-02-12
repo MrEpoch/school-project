@@ -1,23 +1,30 @@
-# Use official Node.js image as base
-FROM node:19.5.0-alpine
-
-# Set working directory
+FROM node:lts-buster-slim AS base
+RUN apt-get update && apt-get install libssl-dev ca-certificates -y
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+COPY package.json yarn.lock ./
 
-# Install dependencies
-RUN npm install
+FROM base as build
+RUN export NODE_ENV=production
+RUN npm i
 
-# Copy the rest of the application
 COPY . .
+RUN npm run prisma:generate
+RUN npm run build
 
-# Generate Prisma client
-RUN npx prisma generate
+FROM base as prod-build
 
-# Expose port 3000
+RUN npm install --production
+COPY prisma prisma
+RUN npm run prisma:generate
+RUN cp -R node_modules prod_node_modules
+
+FROM base as prod
+
+COPY --from=prod-build /app/prod_node_modules /app/node_modules
+COPY --from=build  /app/.next /app/.next
+COPY --from=build  /app/public /app/public
+COPY --from=build  /app/prisma /app/prisma
+
 EXPOSE 3000
-
-# Run the Next.js application
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]

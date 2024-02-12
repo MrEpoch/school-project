@@ -20,14 +20,14 @@ services:
 
   mailhog:
     image: mailhog/mailhog
-    environment:
-      - EMAIL_USERNAME=${EMAIL_USERNAME}
-      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
     ports:
       - "8025:8025" # Mailhog web UI
+      - "1025:1025" # Mailhog SMTP
 
   database:
-    image: prismagraphql/prisma
+    image: postgres
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
