@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=dev
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
       # Add other environment variables as needed for Prisma configuration
     depends_on:

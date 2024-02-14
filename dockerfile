@@ -6,6 +6,8 @@ WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
+COPY next.config.js tsconfig.json ./
+COPY tailwind.config.js postcss.config.js ./
 
 # Install dependencies
 RUN npm install
