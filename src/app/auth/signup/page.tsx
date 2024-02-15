@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Page() {
   return (
-    <section className="bg-gray-50 dark:bg-darkmode-500">
+    <section className="bg-gray-50 min-h-screen w-full dark:bg-darkmode-500">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <Link
           href="/"
@@ -17,7 +17,7 @@ export default function Page() {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Create and account
             </h1>
-            <form className="space-y-4 md:space-y-6" action="#">
+            <form method="POST" className="space-y-4 md:space-y-6" action="/auth/api/signup">
               <div>
                 <label
                   htmlFor="email"

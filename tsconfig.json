@@ -20,6 +20,7 @@
     "paths": {
       "@/assets/*": ["./src/assets/*"],
       "@/components/*": ["./src/components/*"],
+      "@/providers/*": ["./src/providers/*"],
       "@/lib/*": ["./src/lib/*"]
     }
   },
