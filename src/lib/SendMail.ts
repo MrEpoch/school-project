@@ -9,11 +9,12 @@ export async function sendMail({to, subject, text}) {
       to,
       subject,
       text
-  })
+    })
   //asign createTransport method in nodemailer to a variable
   //service: to determine which email platform to use
   //auth contains the senders email and password which are all saved in the .env
-  const Transporter = nodemailer.createTransport({
+    const Transporter = nodemailer.createTransport({
+      host: "mailhog",
       port: 1025,
     });
 

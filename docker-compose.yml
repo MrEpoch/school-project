@@ -11,8 +11,8 @@ services:
     env_file:
       - .env
     environment:
-      - NODE_ENV=dev
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME}
       # Add other environment variables as needed for Prisma configuration
     depends_on:
       - database
@@ -20,6 +20,7 @@ services:
 
   mailhog:
     image: mailhog/mailhog
+    container_name: mailhog
     ports:
       - "8025:8025" # Mailhog web UI
       - "1025:1025" # Mailhog SMTP

@@ -17,7 +17,8 @@ export const lucia = new Lucia(adapter, {
   getUserAttributes: (user) => {
     return {
       email: user.email,
-      emailVerified: user.email_verified
+      email_verified: user.email_verified,
+      emailVerified: user.emailVerified,
     };
   },
 });
@@ -29,6 +30,7 @@ declare module "lucia" {
     DatabaseUserAttributes: {
       email: string;
       email_verified: string;
+      emailVerified: boolean;
     };
   }
 }

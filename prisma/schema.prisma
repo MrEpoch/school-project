@@ -16,6 +16,7 @@ model User {
   email    String    @unique
   hashed_password String
   sessions Session[]
+  email_verified_value Boolean @default(false)
 
   email_verified email_verified[]
 }

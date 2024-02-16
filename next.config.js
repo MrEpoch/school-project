@@ -7,7 +7,11 @@ const nextConfig = {
         ignoreBuildErrors: true
     },
     experimental: {
-      serverComponentsExternalPackages: ['bcrypt']
+      serverComponentsExternalPackages: ['@node-rs/argon2', '@node-rs/bcrypt']
+    },
+    webpack: (config) => {
+      config.externals.push("@node-rs/argon2", "@node-rs/bcrypt");
+      return config;
     }
 }
 
