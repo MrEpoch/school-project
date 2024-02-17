@@ -17,8 +17,7 @@ export const lucia = new Lucia(adapter, {
   getUserAttributes: (user) => {
     return {
       email: user.email,
-      email_verified: user.email_verified,
-      emailVerified: user.emailVerified,
+      email_verified: user.email_verified_value,
     };
   },
 });
@@ -29,8 +28,7 @@ declare module "lucia" {
     Lucia: typeof lucia;
     DatabaseUserAttributes: {
       email: string;
-      email_verified: string;
-      emailVerified: boolean;
+      email_verified_value: boolean;
     };
   }
 }

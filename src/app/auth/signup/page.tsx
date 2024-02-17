@@ -17,7 +17,11 @@ export default function Page() {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Create and account
             </h1>
-            <form method="POST" className="space-y-4 md:space-y-6" action="/auth/api/signup">
+            <form
+              method="POST"
+              className="space-y-4 md:space-y-6"
+              action="/auth/api/signup"
+            >
               <div>
                 <label
                   htmlFor="email"
@@ -58,8 +62,8 @@ export default function Page() {
                   Confirm password
                 </label>
                 <input
-                  type="confirm-password"
-                  name="confirm-password"
+                  type="password"
+                  name="password_confirm"
                   id="confirm-password"
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-lime-600 focus:border-lime-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -84,7 +88,7 @@ export default function Page() {
                     I accept the{" "}
                     <a
                       className="font-medium text-lime-600 hover:underline dark:text-lime-500"
-                      href="#"
+                      href="/"
                     >
                       Terms and Conditions
                     </a>
@@ -92,6 +96,9 @@ export default function Page() {
                 </div>
               </div>
               <button
+                onClick={() => {
+                  
+                }}
                 type="submit"
                 className="w-full text-white bg-lime-600 hover:bg-lime-700 focus:ring-4 focus:outline-none focus:ring-lime-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-lime-600 dark:hover:bg-lime-700 dark:focus:ring-lime-800"
               >

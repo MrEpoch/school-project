@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function Header() {
   return (
-    <nav className="bg-white border-gray-200 dark:bg-darkmode-500">
+    <nav className="bg-white z-10 border-gray-200 dark:bg-darkmode-500">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
           href="/"
@@ -46,12 +46,15 @@ export default function Header() {
               </a>
             </li>
             <li>
-              <Link href="/auth/login" className="border hover:border-transparent border-lime-400  block py-2 px-3 text-gray-900 rounded dark:text-white  md:p-0 md:px-6 hover:text-gray-100 hover:bg-gradient-to-br hover:text-white hover:from-teal-400 hover:to-lime-400">
+              <Link
+                href="/auth/login"
+                className="border hover:border-transparent border-lime-400  block py-2 px-3 text-gray-900 rounded dark:text-white  md:p-0 md:px-6 hover:text-gray-100 hover:bg-gradient-to-br hover:text-white hover:from-teal-400 hover:to-lime-400"
+              >
                 Log In
               </Link>
             </li>
             <li>
-                <ThemeSwitchButton />
+              <ThemeSwitchButton />
             </li>
           </ul>
         </div>

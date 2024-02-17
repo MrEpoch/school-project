@@ -9,11 +9,24 @@ export const createUser = async (email: string, password: string) => {
     return await prisma.user.create({
       data: {
         email,
-        hashed_password
-      }
-    })
+        hashed_password,
+      },
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    return null;
+  }
+};
+
+export const getUser = async (email: string) => {
+  try {
+    return await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+  } catch (error) {
+    console.log(error);
     return null;
   }
 };
