@@ -58,7 +58,6 @@ export async function POST(request: Request) {
       text: `Your verification code is ${verificationCode}`,
     });
 
-
     const session = await lucia.createSession(user.id, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
 
