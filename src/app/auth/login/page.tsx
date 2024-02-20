@@ -1,8 +1,19 @@
 import Logo from "@/assets/logo.png";
+import { lucia } from "@/lib/auth";
+import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-export default function Page() {
+export default async function Page() {
+  const sessionId = cookies().get("session")?.value;
+  if (sessionId) {
+    const { user } = await lucia.validateSession(sessionId);
+    if (user && user.email_verified) {
+      throw redirect("/auth/user");
+    }
+  }
+
   return (
     <section className="bg-gray-50 min-h-screen w-full dark:bg-darkmode-500">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -87,6 +98,16 @@ export default function Page() {
               >
                 Sign in
               </button>
+              <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                Forgot password?{" "}
+                <Link
+                  href="/auth/reset-password"
+                  className="font-medium text-lime-600 hover:underline dark:text-lime-500"
+                >
+                  Reset password
+                </Link>
+              </p>
+
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Don’t have an account yet?{" "}
                 <Link

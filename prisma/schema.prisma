@@ -17,6 +17,7 @@ model User {
   hashed_password String
   sessions Session[]
   email_verified_value Boolean @default(false)
+  is_sponsor Boolean @default(false)
 
   email_verified email_verified[]
   password_reset password_reset[]

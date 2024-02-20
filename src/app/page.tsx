@@ -10,7 +10,8 @@ export default function Page() {
             Connecting sponsors with clients
           </h1>
           <p className="mb-8 text-md font-normal text-gray-500 lg:text-md sm:px-16 lg:px-2 dark:text-gray-400">
-            Our goal at Serenity is to help business finding content creators and influencers to which seek sponsorships and endorsments.
+            Our goal at Serenity is to help business finding content creators
+            and influencers to which seek sponsorships and endorsments.
           </p>
           <div className="lg:mt-16 flex w-full flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
             <a

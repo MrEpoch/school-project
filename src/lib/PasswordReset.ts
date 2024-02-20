@@ -1,7 +1,9 @@
 import { TimeSpan, createDate } from "oslo";
 import { prisma } from "./db";
 
-export async function createPasswordResetToken(userId: string): Promise<string> {
+export async function createPasswordResetToken(
+  userId: string,
+): Promise<string> {
   await prisma.password_reset.deleteMany({
     where: {
       userId,
@@ -14,7 +16,6 @@ export async function createPasswordResetToken(userId: string): Promise<string> 
       expires_at: createDate(new TimeSpan(1, "h")),
     },
   });
-  
+
   return token.id;
 }
-

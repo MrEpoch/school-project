@@ -25,11 +25,14 @@ export async function POST(request: Request) {
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 500 });
     } else if (!user.email_verified_value) {
-      return NextResponse.json({ error: "Email not verified" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Email not verified" },
+        { status: 400 },
+      );
     }
 
-  const verificationToken = await createPasswordResetToken(user.id);
-  const verificationLink = `${requestUrl.origin}/auth/api/reset-password/verify/${verificationToken}`;
+    const verificationToken = await createPasswordResetToken(user.id);
+    const verificationLink = `${requestUrl.origin}/auth/reset-password/verify/${verificationToken}`;
 
     await sendMail({
       to: user.email,
@@ -38,11 +41,14 @@ export async function POST(request: Request) {
       Please click on the following link, or paste this into your browser to complete the process:\n\n
       ${verificationLink}\n\n
       If you did not request this, please ignore this email and your password will remain unchanged.\n`,
-    })
-
-    return NextResponse.redirect(requestUrl.origin + "/auth/reset-password/info", {
-      status: 301,
     });
+
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/reset-password/info",
+      {
+        status: 301,
+      },
+    );
   } catch (error) {
     console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

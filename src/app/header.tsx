@@ -31,7 +31,7 @@ export default function Header() {
             </li>
             <li>
               <Link
-              href="/deals"
+                href="/deals"
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-lime-700 md:p-0 dark:text-white md:dark:hover:text-lime-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
                 Deals
@@ -40,7 +40,7 @@ export default function Header() {
             <li>
               <Link
                 href="/auth/login"
-    className=" block py-2 px-3 text-gray-900 rounded dark:text-white md:scale-125 md:p-0 md:px-6 hover:text-gray-100 bg-gradient-to-br text-white from-teal-500 to-lime-500 hover:brightness-75 transition"
+                className=" block py-2 px-3 text-gray-900 rounded dark:text-white  md:p-0 md:px-6 hover:text-gray-100 bg-gradient-to-br text-white from-teal-500 to-lime-500 hover:brightness-75 transition"
               >
                 Log In
               </Link>
