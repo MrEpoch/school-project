@@ -1,7 +1,6 @@
 "use client";
 import {
   createContext,
-  ReactElement,
   useContext,
   useEffect,
   useState,
@@ -11,10 +10,6 @@ const MyThemeContext = createContext({
   isDarkTheme: true,
   toggleThemeHandler: () => {},
 });
-
-interface ThemePropsInterface {
-  children?: JSX.Element | Array<JSX.Element>;
-}
 
 export const useTheme = () => {
   const context = useContext(MyThemeContext);
@@ -40,12 +35,14 @@ export default function MyThemeContextProvider({
     if (isLocalStorageEmpty()) {
       localStorage.setItem("isDarkTheme", `true`);
       document!.querySelector("body")!.classList.add("dark");
+      document!.querySelector("html")!.style.setProperty("color-scheme", "dark");
       setIsDarkTheme(true);
     } else {
       const isDarkTheme: boolean = JSON.parse(
         localStorage.getItem("isDarkTheme")!,
       );
       isDarkTheme && document!.querySelector("body")!.classList.add("dark");
+      isDarkTheme && document.querySelector("html")!.style.setProperty("color-scheme", "dark");
       setIsDarkTheme(() => {
         return isDarkTheme;
       });
@@ -63,6 +60,9 @@ export default function MyThemeContextProvider({
 
   function toggleDarkClassToBody(): void {
     document!.querySelector("body")!.classList.toggle("dark");
+    document.querySelector("html")!.style.setProperty(
+      "color-scheme", document!.querySelector("body")!.classList.contains("dark") ? "dark" : "light"
+    )
   }
 
   function setValueToLocalStorage(): void {

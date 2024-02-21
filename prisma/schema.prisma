@@ -13,14 +13,50 @@ datasource db {
 
 model User {
   id       String    @id @unique @default(uuid())
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+
   email    String    @unique
   hashed_password String
   sessions Session[]
   email_verified_value Boolean @default(false)
   is_sponsor Boolean @default(false)
+  sponsor_request beSponsorRequest[]
+  sponsorshipAccepted sponsorship[] @relation("sponsorshipAccepted" ,fields: [sponsorId], references: [id])
 
   email_verified email_verified[]
   password_reset password_reset[]
+  sponsorship sponsorship[] @relation("sponsorshipCreated" ,fields: [sponsorId], references: [id])
+}
+
+model beSponsorRequest {
+  id        String   @id @default(uuid())
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+
+  userId    String
+  company_name String
+  company_website String
+  company_phone String
+  company_email String
+
+
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model sponsorship {
+  id        String   @id @default(uuid())
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+
+  sponsorId String
+  title     String
+  image_link String
+  description String
+  amount    Float
+  expires_at DateTime
+
+  sponsor User @relation("sponsorshipCreated" ,references: [id], fields: [sponsorId], onDelete: Cascade)
 }
 
 model Session {
