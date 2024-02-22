@@ -15,6 +15,7 @@ model User {
   id         String   @id @unique @default(uuid())
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
+  isAdmin   Boolean   @default(false)
 
   email                String    @unique
   hashed_password      String
@@ -27,6 +28,10 @@ model User {
   sponsorship         sponsorship[]      @relation("sponsorshipCreated")
   email_verified      email_verified[]
   password_reset      password_reset[]
+
+  company_name    String?
+  company_phone   String?
+  company_email   String?
 }
 
 model beSponsorRequest {
@@ -42,6 +47,13 @@ model beSponsorRequest {
   user User @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
+enum sponsorship_category {
+  technology
+  fashion
+  other
+  cosmetics
+}
+
 model sponsorship {
   id         String   @id @default(uuid())
   created_at DateTime @default(now())
@@ -49,7 +61,8 @@ model sponsorship {
 
   sponsorId   String
   title       String
-  image_link  String
+  category    sponsorship_category
+  image_link  String?
   description String
   amount      Float
   expires_at  DateTime

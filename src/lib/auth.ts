@@ -16,6 +16,7 @@ export const lucia = new Lucia(adapter, {
   },
   getUserAttributes: (user) => {
     return {
+      id: user.id,
       email: user.email,
       email_verified: user.email_verified_value,
       is_sponsor: user.is_sponsor,
@@ -28,6 +29,7 @@ declare module "lucia" {
   interface Register {
     Lucia: typeof lucia;
     DatabaseUserAttributes: {
+      id: string;
       email: string;
       email_verified_value: boolean;
       is_sponsor: boolean;
