@@ -2,3 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.PhoneInputInput {
+  padding: 0.6rem;
+  border-radius: 0.5rem;
+  background-color: white;
+  display: block;
+  width: 100%;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.dark .PhoneInputInput {
+  background-color: #181818;
+}

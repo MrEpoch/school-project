@@ -9,12 +9,9 @@ export default async function EmailVerifyLayout({
 }) {
   const sessionId = cookies().get("session")?.value;
   if (!sessionId) {
-    console.log("ses", sessionId);
     throw redirect("/auth/login");
   }
-  console.log(sessionId);
   const { user } = await lucia.validateSession(sessionId);
-  console.log(user);
   if (!user) {
     throw redirect("/auth/login");
   }

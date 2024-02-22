@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -12,73 +12,73 @@ datasource db {
 }
 
 model User {
-  id       String    @id @unique @default(uuid())
-  created_at DateTime  @default(now())
-  updated_at DateTime  @default(now())
+  id         String   @id @unique @default(uuid())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 
-  email    String    @unique
-  hashed_password String
-  sessions Session[]
-  email_verified_value Boolean @default(false)
-  is_sponsor Boolean @default(false)
-  sponsor_request beSponsorRequest[]
-  sponsorshipAccepted sponsorship[] @relation("sponsorshipAccepted" ,fields: [sponsorId], references: [id])
+  email                String    @unique
+  hashed_password      String
+  sessions             Session[]
+  email_verified_value Boolean   @default(false)
+  is_sponsor           Boolean   @default(false)
 
-  email_verified email_verified[]
-  password_reset password_reset[]
-  sponsorship sponsorship[] @relation("sponsorshipCreated" ,fields: [sponsorId], references: [id])
+  sponsor_request     beSponsorRequest[]
+  sponsorshipAccepted sponsorship[]      @relation("sponsorshipAccepted")
+  sponsorship         sponsorship[]      @relation("sponsorshipCreated")
+  email_verified      email_verified[]
+  password_reset      password_reset[]
 }
 
 model beSponsorRequest {
-  id        String   @id @default(uuid())
-  created_at DateTime  @default(now())
-  updated_at DateTime  @default(now())
+  id         String   @id @default(uuid())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 
-  userId    String
-  company_name String
-  company_website String
-  company_phone String
-  company_email String
-
+  userId          String
+  company_name    String
+  company_phone   String
+  company_email   String
 
   user User @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model sponsorship {
-  id        String   @id @default(uuid())
-  created_at DateTime  @default(now())
-  updated_at DateTime  @default(now())
+  id         String   @id @default(uuid())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 
-  sponsorId String
-  title     String
-  image_link String
+  sponsorId   String
+  title       String
+  image_link  String
   description String
-  amount    Float
-  expires_at DateTime
+  amount      Float
+  expires_at  DateTime
 
-  sponsor User @relation("sponsorshipCreated" ,references: [id], fields: [sponsorId], onDelete: Cascade)
+  sponsor             User   @relation("sponsorshipCreated", fields: [userId], references: [id])
+  sponsorShipAccepted User[] @relation("sponsorshipAccepted")
+  userId              String
 }
 
 model Session {
-  id        String   @unique @id
+  id        String   @id @unique
   userId    String
   expiresAt DateTime
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model email_verified {
-  id        String   @id @default(uuid())
-  userId    String   @unique
+  id         String   @id @default(uuid())
+  userId     String   @unique
   expires_at DateTime
-  code      String
-  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
-  email     String
+  code       String
+  user       User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+  email      String
 }
 
 model password_reset {
-  id        String   @id @default(uuid())
-  userId    String   @unique
+  id         String   @id @default(uuid())
+  userId     String   @unique
   expires_at DateTime
 
-  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
