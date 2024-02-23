@@ -15,17 +15,13 @@ async function getSponsorships() {
       where: {
         userId: user?.id,
       },
-      take: 10
-    })
+      take: 10,
+    });
   } catch (error) {
     return null;
   }
 }
 
-
 export default function Page() {
-  return (
-    <main className="min-h-screen dark:bg-darkmode-500 w-full">
-    </main>
-  )  
+  return <main className="min-h-screen dark:bg-darkmode-500 w-full"></main>;
 }

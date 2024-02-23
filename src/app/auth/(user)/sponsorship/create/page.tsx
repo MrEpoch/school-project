@@ -3,39 +3,40 @@ import { z } from "zod";
 import { cookies } from "next/headers";
 import { lucia } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import ImageComponents from "@/components/ImageComponents";
 
 export default function Page() {
   async function createSponsorship(data: FormData) {
-    'use server';
+    "use server";
     const formData = {
-      title: data.get('title'),
-      description: data.get('description'),
-      amount: data.get('amount'),
-      category: data.get('category'),
-      expiration_date: data.get('expires_at'),
-    }
+      title: data.get("title"),
+      description: data.get("description"),
+      amount: data.get("amount"),
+      category: data.get("category"),
+      expiration_date: data.get("expires_at"),
+    };
 
     const createSponsorshipSchema = z.object({
       title: z.string().min(5),
       description: z.string().min(10),
       amount: z.string().min(1),
       category: z.string().max(10).min(5),
-      expiration_date: z.date().min(new Date())
-    })
+      expiration_date: z.date().min(new Date()),
+    });
 
     try {
-      const result = createSponsorshipSchema.safeParse(formData)
+      const result = createSponsorshipSchema.safeParse(formData);
 
       if (!result.success) {
         return {
-          error: result.error.flatten().fieldErrors
-        }
+          error: result.error.flatten().fieldErrors,
+        };
       }
 
       if (Number.isNaN(Number.parseFloat(result.data.amount))) {
         return {
-          error: "Amount must be a number"
-        }
+          error: "Amount must be a number",
+        };
       }
 
       const sessionId = cookies().get("session")?.value;
@@ -49,25 +50,37 @@ export default function Page() {
         throw redirect("/auth/login");
       }
 
+      if (
+        !(
+          result.data.category === "other" ||
+          result.data.category === "cosmetics" ||
+          result.data.category === "fashion" ||
+          result.data.category === "technology"
+        )
+      ) {
+        return {
+          error: "Invalid category",
+        };
+      }
+
+      const image = data.get("image");
+
       await prisma.sponsorship.create({
         data: {
+          image_link: "",
           title: result.data.title,
           description: result.data.description,
           amount: parseFloat(parseFloat(result.data.amount).toFixed(2)),
           sponsorId: user.id,
           category: result.data.category,
-          expires_at: result.data.expiration_date
-        }
-      })
-
+          expires_at: result.data.expiration_date,
+        },
+      });
     } catch (error) {
       return {
-        error: "Internal Error"
-      }
+        error: "Internal Error",
+      };
     }
-
-
-    
   }
   return (
     <div className="min-h-screen dark:bg-darkmode-500 dark:text-white/90">
@@ -146,6 +159,9 @@ export default function Page() {
                 <option value="fashion">Fashion</option>
                 <option value="other">Other</option>
               </select>
+            </div>
+            <div className="h-80 relative sm:col-span-2">
+              <ImageComponents />
             </div>
             <div className="sm:col-span-2">
               <label

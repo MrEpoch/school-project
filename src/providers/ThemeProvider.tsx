@@ -1,10 +1,5 @@
 "use client";
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const MyThemeContext = createContext({
   isDarkTheme: true,
@@ -35,14 +30,19 @@ export default function MyThemeContextProvider({
     if (isLocalStorageEmpty()) {
       localStorage.setItem("isDarkTheme", `true`);
       document!.querySelector("body")!.classList.add("dark");
-      document!.querySelector("html")!.style.setProperty("color-scheme", "dark");
+      document!
+        .querySelector("html")!
+        .style.setProperty("color-scheme", "dark");
       setIsDarkTheme(true);
     } else {
       const isDarkTheme: boolean = JSON.parse(
         localStorage.getItem("isDarkTheme")!,
       );
       isDarkTheme && document!.querySelector("body")!.classList.add("dark");
-      isDarkTheme && document.querySelector("html")!.style.setProperty("color-scheme", "dark");
+      isDarkTheme &&
+        document
+          .querySelector("html")!
+          .style.setProperty("color-scheme", "dark");
       setIsDarkTheme(() => {
         return isDarkTheme;
       });
@@ -60,9 +60,14 @@ export default function MyThemeContextProvider({
 
   function toggleDarkClassToBody(): void {
     document!.querySelector("body")!.classList.toggle("dark");
-    document.querySelector("html")!.style.setProperty(
-      "color-scheme", document!.querySelector("body")!.classList.contains("dark") ? "dark" : "light"
-    )
+    document
+      .querySelector("html")!
+      .style.setProperty(
+        "color-scheme",
+        document!.querySelector("body")!.classList.contains("dark")
+          ? "dark"
+          : "light",
+      );
   }
 
   function setValueToLocalStorage(): void {

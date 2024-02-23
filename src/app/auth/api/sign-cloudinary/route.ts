@@ -19,14 +19,14 @@ export async function POST(request: NextRequest) {
   }
 
   if (!user.email_verified) {
-    return NextResponse.json(
-      { error: "User not verified" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "User not verified" }, { status: 400 });
   }
 
   try {
-    const signature = cloudinary.utils.api_sign_request(paramsToSign, process.env.CLOUDINARY_API_SECRET as string);
+    const signature = cloudinary.utils.api_sign_request(
+      paramsToSign,
+      process.env.CLOUDINARY_API_SECRET as string,
+    );
     return NextResponse.json({ signature }, { status: 200 });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

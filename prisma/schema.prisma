@@ -67,9 +67,8 @@ model sponsorship {
   amount      Float
   expires_at  DateTime
 
-  sponsor             User   @relation("sponsorshipCreated", fields: [userId], references: [id])
+  sponsor             User   @relation("sponsorshipCreated", fields: [sponsorId], references: [id])
   sponsorShipAccepted User[] @relation("sponsorshipAccepted")
-  userId              String
 }
 
 model Session {

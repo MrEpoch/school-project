@@ -23,13 +23,10 @@ export default async function Page() {
             Logout
           </button>
         </form>
-    {user?.is_sponsor && (
-      <Link href="/auth/sponsorship">
-      Add sponsorship
-      </Link>
-        
-    )}
+        {user?.is_sponsor && (
+          <Link href="/auth/sponsorship">Add sponsorship</Link>
+        )}
       </div>
     </div>
-  )
+  );
 }

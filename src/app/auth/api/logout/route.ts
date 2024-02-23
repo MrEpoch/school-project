@@ -13,10 +13,10 @@ export async function POST() {
     return NextResponse.redirect("/auth/login", { status: 400 });
   }
 
-  try { 
+  try {
     await lucia.invalidateSession(sessionId);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to logout" }, { status: 500 });    
-  } 
+    return NextResponse.json({ error: "Failed to logout" }, { status: 500 });
+  }
   return NextResponse.redirect("/auth/login");
 }

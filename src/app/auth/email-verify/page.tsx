@@ -29,7 +29,7 @@ export default async function Page() {
               htmlFor="email_code"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
-    Email code:
+              Email code:
             </label>
             <input
               name="email_code"
@@ -56,7 +56,10 @@ export default async function Page() {
               htmlFor="agree-terms"
               className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
             >
-              Agree to <Link className="hover:underline text-lime-600" href="/">terms of service</Link>
+              Agree to{" "}
+              <Link className="hover:underline text-lime-600" href="/">
+                terms of service
+              </Link>
             </label>
           </div>
           <button
