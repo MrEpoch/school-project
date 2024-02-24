@@ -62,7 +62,9 @@ model sponsorship {
   sponsorId   String
   title       String
   category    sponsorship_category
-  image_link  String?
+  image_url   String
+  image_id    String
+  image_signature String
   description String
   amount      Float
   expires_at  DateTime

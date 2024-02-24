@@ -1,4 +1,4 @@
-import nc from 'next-connect';
+import { createEdgeRouter } from 'next-connect';
 import multer from 'multer';
 import path from 'path';
 import DatauriParser from 'datauri/parser';
@@ -6,84 +6,127 @@ import cloudinary from '@/lib/Cloudinary';
 import { NextRequest, NextResponse } from 'next/server';
 import { lucia } from '@/lib/auth';
 import { cookies } from 'next/headers';
+import { z } from 'zod';
+import { prisma } from '@/lib/db';
+import moment from 'moment';
 
-const handler = nc({
-  onError: (res) => {
-    res.status(500).end('Something broke!');
-  },
-  onNoMatch: (req, res) => {
-    res.status(404).end('Page is not found');
-  },
-})
+
+const router = createEdgeRouter<NextRequest, NextResponse>();
   // uploading two files
-  .use(multer().any())
+  router.use(multer().any())
   .post(async (req: NextRequest, res: NextResponse) => {
       const sessionId = cookies().get("session")?.value;
 
       if (!sessionId) {
+        console.log("No id");
         return NextResponse.redirect("/auth/login");
       }
 
       const { user } = await lucia.validateSession(sessionId);
       if (!user) {
+        console.log("No user");
         return NextResponse.redirect("/auth/login");
       }
-    const image = req.files.filter((file: any) => file.fieldname === 'image')[0];
-    const video = req.files.filter((file: any) => file.fieldname === 'video')[0];
+
+    const formData = await req.formData();
+    if (!formData.get("expires_at")) {
+      return NextResponse.json({ error: "No expiration" }, { status: 400 });
+    }
+    
+    try {
+      moment(formData.get("expires_at") as string).toDate();
+    } catch (error) {
+      return NextResponse.json({ error: "Invalid date" }, { status: 400 });
+    }
+
+    const processedData = {
+      title: formData.get("title"),
+      description: formData.get("description"),
+      amount: formData.get("reward"),
+      category: formData.get("category"),
+      expiration_date: moment(formData.get("expires_at") as string, 'YYYY-MM-DD').toDate(),
+    };
+
+    const createSponsorshipSchema = z.object({
+      title: z.string().min(5),
+      description: z.string().min(10),
+      amount: z.string().min(1),
+      category: z.string().max(10).min(5),
+      expiration_date: z.date().min(new Date()).max(new Date(new Date().setFullYear(new Date().getFullYear() + 1))),
+    });
+
+      const result = createSponsorshipSchema.safeParse(processedData);
+
+      if (!result.success) {
+        console.log(result.error);
+        return NextResponse.json({
+          error: result.error.flatten().fieldErrors,
+        }, { status: 400 });
+      }
+
+      if (Number.isNaN(Number.parseFloat(result.data.amount))) {
+        return NextResponse.json({
+          error: "Amount must be a number",
+        }, { status: 400 });
+      }
+
+      if (
+        !(
+          result.data.category === "other" ||
+          result.data.category === "cosmetics" ||
+          result.data.category === "fashion" ||
+          result.data.category === "technology"
+        )
+      ) {
+        return NextResponse.json({
+          error: "Invalid category",
+        }, { status: 400 });
+      }
+
+    const image = formData.get("image")[0];
     // create a neew Data URI parser
     const parser = new DatauriParser();
     try {
       // create image
-      const createImage = async (img) => {
+      const createImage = async (img: any) => {
+        console.log(img);
         const base64Image = parser.format(path.extname(img.originalname).toString(), img.buffer);
-        const uploadedImageResponse = await cloudinary.uploader.upload(base64Image.content, 'flashcards', { resource_type: 'image' });
+        const uploadedImageResponse = await cloudinary.v2.uploader.upload(base64Image.content as string, { resource_type: 'image' });
         return uploadedImageResponse;
       };
-
-      // create video
-      const createVideo = async (vid) => {
-        const base64Video = parser.format(path.extname(vid.originalname).toString(), vid.buffer);
-        const uploadedVideoResponse = await cloudinary.uploader.upload(base64Video.content, 'flashcards', { resource_type: 'video' });
-        return uploadedVideoResponse;
-      };
-
       // saving information
       const createdImage = await createImage(image);
-      const imageUrl = createdImage.url;
+      const image_url = createdImage.url;
       const image_id = createdImage.public_id;
       const image_signature = createdImage.signature;
-      const createdVideo = video ? await createVideo(video) : null;
-      const videoUrl = createdVideo?.url;
-      const video_id = createdVideo?.public_id;
-      const video_signature = createVideo?.signature;
-
-      // creating a new card
-      const card = await xata.db.Cards.create({
-        name: req.body.cardName,
-        category: req.body.category,
-        color: req.body.cardColor,
-        front: req.body.front,
-        back: req.body.back,
-        image: imageUrl,
-        image_id,
-        image_signature,
-        video: videoUrl,
-        video_id,
-        video_signature,
-        user: token.user.id,
+      
+      await prisma.sponsorship.create({
+        data: {
+          image_url,
+          image_id,
+          image_signature,
+          title: result.data.title,
+          description: result.data.description,
+          amount: parseFloat(parseFloat(result.data.amount).toFixed(2)),
+          sponsorId: user.id,
+          category: result.data.category,
+          expires_at: result.data.expiration_date,
+        },
       });
-      res.json({ error: null, data: card });
+      // creating a new card
+      return NextResponse.json({ error: null, data: {} });
     } catch (error) {
-      res.status(500).json({ error, data: null });
+      console.log(error);
+      return NextResponse.json({ error, data: null }, { status: 500 });
     }
   });
 
-// disable body parser
 export const config = {
   api: {
     bodyParser: false,
   },
 };
 
-export default handler;
-
+export async function POST(req: NextRequest, res: NextResponse) {
+  return router.run(req, res);
+}
