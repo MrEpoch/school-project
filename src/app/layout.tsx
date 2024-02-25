@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "./header";
 import ThemeProvider from "@/providers/ThemeProvider";
+import Footer from "./footer";
 
 export const metadata: Metadata = {
   title: "School project app",
@@ -20,6 +21,7 @@ export default function RootLayout({
         <ThemeProvider>
           <Header />
           {children}
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

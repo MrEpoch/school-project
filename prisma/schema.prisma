@@ -54,6 +54,11 @@ enum sponsorship_category {
   cosmetics
 }
 
+enum sponsorship_status {
+  ended
+  accepting
+}
+
 model sponsorship {
   id         String   @id @default(uuid())
   created_at DateTime @default(now())
@@ -68,6 +73,7 @@ model sponsorship {
   description String
   amount      Float
   expires_at  DateTime
+  status      sponsorship_status @default(accepting)
 
   sponsor             User   @relation("sponsorshipCreated", fields: [sponsorId], references: [id])
   sponsorShipAccepted User[] @relation("sponsorshipAccepted")

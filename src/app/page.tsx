@@ -6,14 +6,14 @@ export default function Page() {
     <main className="flex relative min-h-screen w-full bg-white dark:bg-darkmode-500 min-h-screen justify-center">
       <div className="container w-full text-center  mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 grid grid-cols-1 items-center lg:grid-cols-2">
         <div className="w-full h-full flex flex-col justify-center gap-8 row-start-2 lg:row-auto">
-          <h1 className="text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+          <h1 className="text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white text-start">
             Connecting sponsors with clients
           </h1>
-          <p className="mb-8 text-md font-normal text-gray-500 lg:text-md sm:px-16 lg:px-2 dark:text-gray-400">
+          <p className="mb-8 text-md font-normal text-gray-500 lg:text-md text-start dark:text-gray-400">
             Our goal at Serenity is to help business finding content creators
             and influencers to which seek sponsorships and endorsments.
           </p>
-          <div className="lg:mt-16 flex w-full flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
+          <div className="lg:mt-8 flex w-full flex-col space-y-4 sm:flex-row sm:justify-start sm:space-y-0">
             <a
               href="#"
               className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-lime-700 hover:bg-lime-800 focus:ring-4 focus:ring-lime-300 dark:focus:ring-lime-900"
