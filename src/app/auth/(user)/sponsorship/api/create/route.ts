@@ -83,14 +83,20 @@ const router = createEdgeRouter<NextRequest, NextResponse>();
         }, { status: 400 });
       }
 
-    const image = formData.get("image")[0];
-    // create a neew Data URI parser
+    const image = formData.get("image") as File;
+    console.log(formData.get("image"));
+
+    if (!image) {
+      return NextResponse.json({ error: "No image" }, { status: 400 });
+    }
+
     const parser = new DatauriParser();
+
     try {
       // create image
       const createImage = async (img: any) => {
         console.log(img);
-        const base64Image = parser.format(path.extname(img.originalname).toString(), img.buffer);
+        const base64Image = parser.format(path.extname(img.name).toString(), await img.arrayBuffer());
         const uploadedImageResponse = await cloudinary.v2.uploader.upload(base64Image.content as string, { resource_type: 'image' });
         return uploadedImageResponse;
       };
