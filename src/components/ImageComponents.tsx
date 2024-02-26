@@ -15,7 +15,7 @@ export default function ImageComponents() {
           alt=""
         />
       ) : (
-        <div className="rounded-lg w-full bg-gray-50 dark:bg-darkmode-400 h-full flex items-center flex-col gap-5 justify-center">
+        <div className="rounded-lg w-full p-4 bg-gray-50 dark:bg-darkmode-400 h-full flex items-center flex-col gap-5 justify-center">
           <svg
             className="w-10 h-10 text-gray-800 dark:text-white"
             aria-hidden="true"
