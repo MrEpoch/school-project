@@ -25,7 +25,6 @@ async function getSponsorship(id: string) {
   }
 }
 
-
 export default async function Page({ params }: { params: { id: string } }) {
   const sponsorship = await getSponsorship(params.id);
 
@@ -41,7 +40,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         </h2>
         <form
           method="POST"
-          action="/auth/sponsorship/api/create"
+          action="/auth/sponsorship/api"
           encType="multipart/form-data"
         >
           <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -53,7 +52,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 type="text"
                 name="title"
                 id="name"
-    value={sponsorship.title}
+                value={sponsorship.title}
                 className="bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-lime-600 focus:border-lime-600 block w-full p-2.5 dark:bg-darkmode-400  dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
                 placeholder="Type product name"
                 required
@@ -71,7 +70,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 name="reward"
                 step="0.01"
                 min={50}
-    value={sponsorship.amount}
+                value={sponsorship.amount}
                 id="price"
                 className="bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-lime-600 focus:border-lime-600 block w-full p-2.5 dark:bg-darkmode-400 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
                 placeholder="$29"
@@ -89,7 +88,12 @@ export default async function Page({ params }: { params: { id: string } }) {
                 type="date"
                 name="expires_at"
                 className="bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-lime-600 focus:border-lime-600 block w-full p-2.5 dark:bg-darkmode-400 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
-    value={moment(sponsorship.expires_at, "YYYY-MM-DD").toDate().toISOString().split('T')[0]}
+                value={
+                  moment(sponsorship.expires_at, "YYYY-MM-DD")
+                    .toDate()
+                    .toISOString()
+                    .split("T")[0]
+                }
                 placeholder="MM/DD/YYYY"
                 required
               />
@@ -106,12 +110,30 @@ export default async function Page({ params }: { params: { id: string } }) {
                 name="category"
                 className="bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-full p-2.5 dark:bg-darkmode-400 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
               >
-                <option selected={sponsorship.category === "cosmetics"} value="cosmetics">
+                <option
+                  selected={sponsorship.category === "cosmetics"}
+                  value="cosmetics"
+                >
                   Cosmetics
                 </option>
-                <option selected={sponsorship.category === "technology"} value="technology">Technology</option>
-                <option selected={sponsorship.category === "fashion"} value="fashion">Fashion</option>
-                <option selected={sponsorship.category === "other"} value="other">Other</option>
+                <option
+                  selected={sponsorship.category === "technology"}
+                  value="technology"
+                >
+                  Technology
+                </option>
+                <option
+                  selected={sponsorship.category === "fashion"}
+                  value="fashion"
+                >
+                  Fashion
+                </option>
+                <option
+                  selected={sponsorship.category === "other"}
+                  value="other"
+                >
+                  Other
+                </option>
               </select>
             </div>
             <div className="h-full w-full py-6 relative sm:col-span-2">
@@ -146,5 +168,5 @@ export default async function Page({ params }: { params: { id: string } }) {
         </form>
       </div>
     </main>
-  )
+  );
 }

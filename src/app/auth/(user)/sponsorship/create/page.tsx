@@ -9,7 +9,7 @@ export default function Page() {
         </h2>
         <form
           method="POST"
-          action="/auth/sponsorship/api/create"
+          action="/auth/sponsorship/api"
           encType="multipart/form-data"
         >
           <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">

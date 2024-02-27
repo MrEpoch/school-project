@@ -107,11 +107,23 @@ export default async function Page() {
                   <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
                     {sponsorship.expires_at.toDateString()}
                   </td>
-                  <td className={"px-6 py-4 font-semibold" + (sponsorship.status === "accepting" ? " text-green-500" : " text-red-500")}>
+                  <td
+                    className={
+                      "px-6 py-4 font-semibold" +
+                      (sponsorship.status === "accepting"
+                        ? " text-green-500"
+                        : " text-red-500")
+                    }
+                  >
                     {sponsorship.status}
                   </td>
                   <td className="px-6 py-4 font-semibold">
-                    <Link className="hover:underline" href={`/auth/sponsorship/info/${sponsorship.id}`}>Details</Link>
+                    <Link
+                      className="hover:underline"
+                      href={`/auth/sponsorship/info/${sponsorship.id}`}
+                    >
+                      Details
+                    </Link>
                   </td>
                 </tr>
               ))}
