@@ -16,8 +16,8 @@ interface NextRequestWithParams extends NextRequest {
   };
 }
 
-export const dynamic = 'force-dynamic'
-export const dynamicParams = true
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
 const router = createEdgeRouter<NextRequestWithParams, null>();
 // uploading two files
@@ -110,7 +110,7 @@ router.use(multer().any()).put(async (req: NextRequestWithParams) => {
       id: req.nextUrl.searchParams.get("id") as string,
       sponsorId: user.id,
     },
-  })
+  });
 
   if (!sponsorship) {
     return NextResponse.redirect("/auth/sponsorship");
@@ -187,14 +187,20 @@ export const config = {
   },
 };
 
-export async function PUT(req: NextRequestWithParams, { params }: { params: { id: string } }) {
+export async function PUT(
+  req: NextRequestWithParams,
+  { params }: { params: { id: string } },
+) {
   const paramsZ = z.string().uuid();
   const paramsV = await paramsZ.parseAsync(params.id);
   req.params = { id: paramsV };
   return router.run(req, null);
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+) {
   console.log(params);
   const sessionId = cookies().get("session")?.value;
   if (!sessionId) {
