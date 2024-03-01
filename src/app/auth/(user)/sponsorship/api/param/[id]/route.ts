@@ -23,16 +23,15 @@ const router = createEdgeRouter<NextRequestWithParams, null>();
 // uploading two files
 router.use(multer().any()).put(async (req: NextRequestWithParams) => {
   const sessionId = cookies().get("session")?.value;
+  const requestUrl = new URL(req.url);
 
   if (!sessionId) {
-    console.log("No id");
-    return NextResponse.redirect("/auth/login");
+    return NextResponse.redirect(requestUrl.origin + "/auth/login");
   }
 
   const { user } = await lucia.validateSession(sessionId);
   if (!user) {
-    console.log("No user");
-    return NextResponse.redirect("/auth/login");
+    return NextResponse.redirect(requestUrl.origin + "/auth/login");
   }
 
   const formData = await req.formData();
@@ -113,7 +112,7 @@ router.use(multer().any()).put(async (req: NextRequestWithParams) => {
   });
 
   if (!sponsorship) {
-    return NextResponse.redirect("/auth/sponsorship");
+    return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship");
   }
 
   const image = formData.get("image") as File;
@@ -157,7 +156,7 @@ router.use(multer().any()).put(async (req: NextRequestWithParams) => {
         },
       });
       // creating a new card
-      return NextResponse.redirect("/auth/sponsorship");
+      return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship");
     } catch (error) {
       console.log(error);
       return NextResponse.json({ error, data: null }, { status: 500 });
@@ -178,7 +177,7 @@ router.use(multer().any()).put(async (req: NextRequestWithParams) => {
       },
     });
     // creating a new card
-    return NextResponse.redirect("/auth/sponsorship");
+    return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship");
   }
 });
 export const config = {
@@ -201,14 +200,14 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } },
 ) {
-  console.log(params);
+  const requestUrl = new URL(req.url);
   const sessionId = cookies().get("session")?.value;
   if (!sessionId) {
-    return NextResponse.redirect("/auth/login");
+    return NextResponse.redirect(requestUrl.origin + "/auth/login");
   }
   const { user } = await lucia.validateSession(sessionId);
   if (!user) {
-    return NextResponse.redirect("/auth/login");
+    return NextResponse.redirect(requestUrl.origin + "/auth/login");
   }
 
   const zodParams = z.string();
@@ -225,5 +224,5 @@ export async function DELETE(
     await cloudinary.v2.uploader.destroy(deleted.image_id as string);
   }
 
-  return NextResponse.redirect("/auth/sponsorship");
+  return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship");
 }

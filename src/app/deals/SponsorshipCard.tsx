@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function Card({ cardInfo }: { cardInfo: sponsorship }) {
   return (
-    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div className="max-w-sm bg-white h-fit border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <Link href="#">
         <Image
           className="rounded-t-lg"

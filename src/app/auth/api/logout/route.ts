@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { lucia } from "@/lib/auth";
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  const requestUrl = new URL(request.url);
   const sessionId = cookies().get("session")?.value;
   if (!sessionId) {
     return NextResponse.redirect("/auth/login", { status: 400 });
@@ -18,5 +19,5 @@ export async function POST() {
   } catch (error) {
     return NextResponse.json({ error: "Failed to logout" }, { status: 500 });
   }
-  return NextResponse.redirect("/auth/login");
+  return NextResponse.redirect(requestUrl.origin+"/auth/login");
 }

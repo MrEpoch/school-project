@@ -14,16 +14,17 @@ const router = createEdgeRouter<NextRequest, NextResponse>();
 // uploading two files
 router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
   const sessionId = cookies().get("session")?.value;
+  const requestUrl = new URL(req.url);
 
   if (!sessionId) {
     console.log("No id");
-    return NextResponse.redirect("/auth/login");
+    return NextResponse.redirect(requestUrl.origin + "/auth/login");
   }
 
   const { user } = await lucia.validateSession(sessionId);
   if (!user) {
     console.log("No user");
-    return NextResponse.redirect("/auth/login");
+    return NextResponse.redirect(requestUrl.origin + "/auth/login");
   }
 
   const formData = await req.formData();
@@ -138,7 +139,7 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
       },
     });
     // creating a new card
-    return NextResponse.redirect("/auth/sponsorship");
+    return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship");
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error, data: null }, { status: 500 });

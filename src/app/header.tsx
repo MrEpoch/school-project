@@ -1,10 +1,29 @@
 import Logo from "@/assets/logo.png";
 import NavigationToggle from "@/components/NavigationToggle";
 import ThemeSwitchButton from "@/components/ThemeSwitchButton";
+import { lucia } from "@/lib/auth";
+import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import LoginButton from "./LoginButton";
 
-export default function Header() {
+async function isLoggedIn() {
+  const sessionId = cookies().get("session")?.value;
+  if (!sessionId) {
+    return false;
+  }
+  const { user } = await lucia.validateSession(sessionId);
+  if (!user) {
+    return false;
+  }
+  return true;
+}
+
+
+export default async function Header() {
+  const logged = await isLoggedIn();
+
   return (
     <nav className="bg-white z-10 border-gray-200 dark:bg-darkmode-500">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -38,12 +57,7 @@ export default function Header() {
               </Link>
             </li>
             <li className="w-full h-full">
-              <Link
-                href="/auth/login"
-                className="block py-2 px-3 text-gray-900 rounded dark:text-white  md:px-6 hover:text-gray-100 bg-gradient-to-br text-white from-teal-500 to-lime-500 hover:brightness-75 transition"
-              >
-                Log In
-              </Link>
+              <LoginButton isLogged={logged} />
             </li>
             <li>
               <ThemeSwitchButton />
