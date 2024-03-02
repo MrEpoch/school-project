@@ -41,7 +41,7 @@ export default function WhyUs() {
 
 function WhyUsCard({ text, ImageSvg }: { text: string, ImageSvg: any }) {
   return (
-    <div className="group min-h-[280px] max-h-[280px] max-w-[280px] min-w-[280px]
+    <div className="group min-h-[280px] max-h-[280px] max-w-[280px] min-w-[280px] sm:min-h-[320px] sm:max-h-[320px] sm:max-w-[320px] sm:min-w-[320px]
     rounded-lg dark:bg-darkmode-400 hover:bg-gradient-to-r dark:from-lime-500 from-lime-400
     dark:to-green-500 to-green-400 hover:text-white  bg-gray-200/60 cursor-pointer flex shadow items-center flex-col sm:p-4 p-2 justify-center gap-1 sm:gap-2">
       <h1 className="text-2xl font-semibold text-center">{text}</h1>
