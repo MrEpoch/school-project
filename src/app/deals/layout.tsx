@@ -1,6 +1,6 @@
 import { authChecker } from "@/lib/checkAuth";
 
-export default async function EmailVerifyLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;

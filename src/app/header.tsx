@@ -20,7 +20,6 @@ async function isLoggedIn() {
   return true;
 }
 
-
 export default async function Header() {
   const logged = await isLoggedIn();
 

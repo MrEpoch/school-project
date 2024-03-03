@@ -1,7 +1,7 @@
-
-'use server';
+"use server";
 import { z } from "zod";
 import { sendMail } from "./SendMail";
+import crypto from "crypto";
 
 export async function ContactEmailSend(formData: FormData) {
   const uncheckedData = {
@@ -24,10 +24,22 @@ export async function ContactEmailSend(formData: FormData) {
 
   try {
     await sendMail({
-      to: dataZodResult.data.email,
+      to: process.env.CONTACT_EMAIL,
       subject: dataZodResult.data.title,
-      text: dataZodResult.data.message,
-    })
+      text:
+        dataZodResult.data.message +
+        "\n\n" +
+        "Received from hashed mail: " +
+        crypto
+          .createCipheriv(
+            "aes-256-cbc",
+            process.env.CONTACT_EMAIL_SECRET as string,
+            process.env.CONTACT_EMAIL_SECRET_INIT as string,
+          )
+          .update(dataZodResult.data.email, "utf8", "hex"),
+    });
+
+    // const decrypted = crypto.createDecipheriv("aes-256-cbc", process.env.CONTACT_EMAIL_SECRET as string, process.env.CONTACT_EMAIL_SECRET_INIT as string).update(--Encrypted--, "hex", "utf8");
     return { data: null, error: null };
   } catch (error) {
     return { error: "Could not send data", data: null };

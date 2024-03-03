@@ -1,20 +1,14 @@
 import { prisma } from "@/lib/db";
-import { lucia } from "@/lib/auth";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import DeleteButton from "./DeleteButton";
+import { authChecker } from "@/lib/checkAuth";
 
 export const revalidate = 0;
 
 async function getSponsorship(id: string) {
-  const sessionId = cookies().get("session")?.value;
-  if (!sessionId) {
-    throw redirect("/auth/login");
-  }
-  const { user } = await lucia.validateSession(sessionId);
-
+  const user = await authChecker();
   try {
     return await prisma.sponsorship.findUnique({
       where: {

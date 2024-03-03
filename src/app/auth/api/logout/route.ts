@@ -19,5 +19,5 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     return NextResponse.json({ error: "Failed to logout" }, { status: 500 });
   }
-  return NextResponse.redirect(requestUrl.origin+"/auth/login");
+  return NextResponse.redirect(requestUrl.origin + "/auth/login");
 }

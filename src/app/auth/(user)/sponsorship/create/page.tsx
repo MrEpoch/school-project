@@ -9,7 +9,7 @@ export default function Page() {
         </h2>
         <form
           method="POST"
-    action="/auth/sponsorship/api/basic"
+          action="/auth/sponsorship/api/basic"
           encType="multipart/form-data"
         >
           <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -80,9 +80,9 @@ export default function Page() {
               </select>
             </div>
             <div className="h-full w-full py-6 relative sm:col-span-2">
-      <div className="relative">
-              <ImageComponents  />
-            </div>
+              <div className="relative">
+                <ImageComponents />
+              </div>
             </div>
             <div className="sm:col-span-2">
               <label

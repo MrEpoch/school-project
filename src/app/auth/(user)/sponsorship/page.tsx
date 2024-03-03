@@ -1,17 +1,10 @@
-import { lucia } from "@/lib/auth";
+import { authChecker } from "@/lib/checkAuth";
 import { prisma } from "@/lib/db";
-import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 async function getSponsorships() {
-  const sessionId = cookies().get("session")?.value;
-  if (!sessionId) {
-    throw redirect("/auth/login");
-  }
-  const { user } = await lucia.validateSession(sessionId);
-
+  const user = await authChecker();
   try {
     return await prisma.sponsorship.findMany({
       where: {
@@ -22,30 +15,6 @@ async function getSponsorships() {
   } catch (error) {
     return null;
   }
-}
-
-{
-  /*
-    Sponsorship values, some of them will be displayed in table
-
- id         String   @id @default(uuid())
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
-
-  sponsorId   String
-  title       String
-  category    sponsorship_category
-  image_url   String
-  image_id    String
-  image_signature String
-  description String
-  amount      Float
-  expires_at  DateTime
-  status
-
-  sponsor             User   @relation("sponsorshipCreated", fields: [sponsorId], references: [id])
-  sponsorShipAccepted User[] @relation("sponsorshipAccepted")
-*/
 }
 
 export default async function Page() {

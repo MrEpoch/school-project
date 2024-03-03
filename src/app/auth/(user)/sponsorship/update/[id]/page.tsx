@@ -1,18 +1,11 @@
-import ImageComponents from "@/components/ImageComponents";
-import { lucia } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import moment from "moment";
 import ImageComponentUpdate from "./UpdateImageShown";
+import { authChecker } from "@/lib/checkAuth";
 
 async function getSponsorship(id: string) {
-  const sessionId = cookies().get("session")?.value;
-  if (!sessionId) {
-    return redirect("/auth/login");
-  }
-  const { user } = await lucia.validateSession(sessionId);
-
+  const user = await authChecker();
   try {
     return await prisma.sponsorship.findUnique({
       where: {

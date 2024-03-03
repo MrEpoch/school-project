@@ -1,17 +1,8 @@
-import { lucia } from "@/lib/auth";
-import { cookies } from "next/headers";
+import { authChecker } from "@/lib/checkAuth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 export default async function Page() {
-  const sessionId = cookies().get("session")?.value;
-
-  if (!sessionId) {
-    throw redirect("/auth/login");
-  }
-
-  const { user } = await lucia.validateSession(sessionId);
-
+  const user = await authChecker();
   return (
     <div className="min-h-screen w-full dark:bg-darkmode-500">
       <div className="flex flex-col gap-10 items-center justify-center h-screen max-w-screen-xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
