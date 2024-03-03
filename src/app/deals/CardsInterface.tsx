@@ -1,7 +1,6 @@
 "use client";
 
 import { sponsorship } from "@prisma/client";
-import Image from "next/image";
 import { useState } from "react";
 import { getSponsorships } from "./SponsorshipGet";
 import Card from "./SponsorshipCard";
@@ -17,7 +16,9 @@ export default function CardsInterace({
 
   return (
     <div className="w-full h-full">
-      <div className="grid h-screen grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="h-screen flex flex-col
+        overflow-hidden justify-center justify-items-center text-center lg:py-16 sm:grid grid-cols-1 gap-x-6 gap-y-4 sm:gap-y-6
+        sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-2">
         {data.map((item) => (
           <Card key={item.id} cardInfo={item} />
         ))}
@@ -30,11 +31,11 @@ export default function CardsInterace({
             const newData = await getSponsorshipsWithSkip();
             if (!newData.data) {
               setError(newData.error);
-              return;
+            } else {
+              setError(null);
+              setData((prev) => [...prev, ...newData.data]);
+              setSkip((prev) => prev + 10);
             }
-            setError(null);
-            setData((prev) => [...prev, ...newData.data]);
-            setSkip((prev) => prev + 10);
           } catch (e) {
             console.log(e);
           }
