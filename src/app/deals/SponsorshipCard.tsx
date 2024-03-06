@@ -9,7 +9,7 @@ export default function Card({ cardInfo }: { cardInfo: sponsorship }) {
     <div className="max-w-sm bg-white h-fit border border-gray-200 rounded-lg shadow dark:bg-darkmode-400 dark:border-black">
       <Link href={"/deals/details/" + cardInfo.id}>
         <Image
-          className="rounded-t-lg"
+          className="rounded-t-lg h-56 object-cover object-center"
           src={cardInfo.image_url}
           alt={cardInfo.title}
           width={500}

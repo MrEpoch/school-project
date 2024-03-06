@@ -48,18 +48,19 @@ export default async function Page({ params }: { params: { id: string } }) {
   };
 
   return (
-    <main className="min-h-screen w-full dark:bg-darkmode-500 py-8">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-8">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-          Sponsorship details
-        </h1>
-        <Image
+    <main className="min-h-screen w-full flex flex-col dark:bg-darkmode-500 py-8">
+      <div className="flex lg:flex-row flex-col sm:max-w-unset max-w-screen-xl mx-auto px-4 items-center h-full flex-1 justify-center gap-8">
+        <div className="sm:flex-1 justify-center flex  w-full h-full border-r-2">
+          <Image
+          className="rounded-lg h-full object-cover object-center"
           src={sponsorship.image_url}
           alt={sponsorship.title}
-          width={500}
-          height={500}
+          width={1000}
+          height={1000}
         />
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white underline">
+        </div>
+        <div className="sm:flex-1 w-full h-full items-center flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-tight mb-8 text-gray-900 dark:text-white">
           {sponsorship.title}
         </h1>
         <p className="text-lg font-medium text-gray-900 dark:text-white">
@@ -75,6 +76,13 @@ export default async function Page({ params }: { params: { id: string } }) {
             {date.year}/{date.month}/{date.day}
           </span>
         </p>
+        </div>
+      </div>
+      <div className="flex justify-center">
+        <button className="bg-lime-700 hover:bg-lime-800 text-white font-bold py-2 px-4 rounded">
+          Ask for sponsorship
+        </button>
+
       </div>
     </main>
   );
