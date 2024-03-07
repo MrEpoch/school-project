@@ -24,7 +24,7 @@ model User {
   is_sponsor           Boolean   @default(false)
 
   sponsor_request     beSponsorRequest[]
-  sponsorshipAccepted sponsorship[]      @relation("sponsorshipAccepted")
+  sponsorshipAccepted String[]
   sponsorship         sponsorship[]      @relation("sponsorshipCreated")
   email_verified      email_verified[]
   password_reset      password_reset[]
@@ -76,7 +76,6 @@ model sponsorship {
   status      sponsorship_status @default(accepting)
 
   sponsor             User   @relation("sponsorshipCreated", fields: [sponsorId], references: [id])
-  sponsorShipAccepted User[] @relation("sponsorshipAccepted")
 }
 
 model Session {
