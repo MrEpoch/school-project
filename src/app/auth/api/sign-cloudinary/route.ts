@@ -3,8 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { lucia } from "@/lib/auth";
 import { v2 as cloudinary } from "cloudinary";
+import { limiter } from "@/lib/Limiter";
 
 export async function POST(request: NextRequest) {
+  
+  const remaining = await limiter.removeTokens(1);
+  if (remaining < 0) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
+
   const body = JSON.parse(request.body) || {};
   const { paramsToSign } = body;
 

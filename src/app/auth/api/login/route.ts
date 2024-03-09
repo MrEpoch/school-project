@@ -1,12 +1,19 @@
 import { Prisma } from "@prisma/client";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { z } from "zod";
 import { getUser } from "@/lib/UserActions";
 import { lucia } from "@/lib/auth";
 import { Argon2id } from "oslo/password";
+import { limiter } from "@/lib/Limiter";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const remaining = await limiter.removeTokens(1);
+
+  if (remaining < 0) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const requestUrl = new URL(request.url);
   const formData = await request.formData();
   const email = formData.get("email");

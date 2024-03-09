@@ -1,3 +1,3 @@
-export default function SponsorLayout({ children }) {
+export default function SponsorLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }

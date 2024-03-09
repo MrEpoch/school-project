@@ -5,8 +5,16 @@ import { z } from "zod";
 import { verifyEmailCode } from "@/lib/EmailVerify";
 import { lucia } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { limiter } from "@/lib/Limiter";
 
 export async function POST(request: Request) {
+
+  const remaining = await limiter.removeTokens(1);
+
+  if (remaining < 0) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const requestUrl = new URL(request.url);
   const formData = await request.formData();
   const emailCode = formData.get("email_code");

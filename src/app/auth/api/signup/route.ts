@@ -6,8 +6,16 @@ import { createUser } from "@/lib/UserActions";
 import { generateEmailVerificationCode } from "@/lib/EmailVerify";
 import { sendMail } from "@/lib/SendMail";
 import { lucia } from "@/lib/auth";
+import { limiter } from "@/lib/Limiter";
 
 export async function POST(request: Request) {
+
+  const remaining = await limiter.removeTokens(1);
+
+  if (remaining < 0) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const requestUrl = new URL(request.url);
   const formData = await request.formData();
   const email = formData.get("email");

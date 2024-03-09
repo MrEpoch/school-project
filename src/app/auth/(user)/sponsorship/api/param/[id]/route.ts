@@ -9,6 +9,7 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import moment from "moment";
+import { limiter } from "@/lib/Limiter";
 
 interface NextRequestWithParams extends NextRequest {
   params: {
@@ -190,6 +191,12 @@ export async function PUT(
   req: NextRequestWithParams,
   { params }: { params: { id: string } },
 ) {
+  const remaining = await limiter.removeTokens(1);
+
+  if (remaining < 0) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const paramsZ = z.string().uuid();
   const paramsV = await paramsZ.parseAsync(params.id);
   req.params = { id: paramsV };
@@ -200,6 +207,13 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } },
 ) {
+
+  const remaining = await limiter.removeTokens(1);
+
+  if (remaining < 0) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const requestUrl = new URL(req.url);
   const sessionId = cookies().get("session")?.value;
   if (!sessionId) {

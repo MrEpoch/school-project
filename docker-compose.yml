@@ -17,6 +17,7 @@ services:
     depends_on:
       - database
       - mailhog
+      - cache
 
   mailhog:
     image: mailhog/mailhog
@@ -38,7 +39,19 @@ services:
     container_name: postgres
     volumes:
       - pgdata:/var/lib/postgresql/data
+  cache:
+    image: redis
+    container_name: redis
+    env_file:
+      - .env
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - cache:/data
 
 volumes:
   pgdata:
+  cache:
+    driver: local
 

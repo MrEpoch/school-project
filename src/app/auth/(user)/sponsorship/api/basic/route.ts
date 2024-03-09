@@ -9,6 +9,7 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import moment from "moment";
+import { limiter } from "@/lib/Limiter";
 
 const router = createEdgeRouter<NextRequest, NextResponse>();
 // uploading two files
@@ -152,5 +153,11 @@ export const config = {
 };
 
 export async function POST(req: NextRequest, res: NextResponse) {
+  const remaining = await limiter.removeTokens(1);
+
+  if (remaining < 0) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   return router.run(req, res);
 }

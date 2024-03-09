@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import ButtonSubmit from "./ButtonSubmit";
 
 export default async function Page() {
   const sessionId = cookies().get("session")?.value;
@@ -92,12 +93,7 @@ export default async function Page() {
                   Forgot password?
                 </a>
               </div>
-              <button
-                type="submit"
-                className="w-full text-white bg-lime-600 hover:bg-lime-700 focus:ring-4 focus:outline-none focus:ring-lime-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-lime-600 dark:hover:bg-lime-700 dark:focus:ring-lime-800"
-              >
-                Sign in
-              </button>
+              <ButtonSubmit />
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Forgot password?{" "}
                 <Link

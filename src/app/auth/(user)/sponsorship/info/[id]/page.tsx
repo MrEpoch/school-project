@@ -8,6 +8,7 @@ import { authChecker } from "@/lib/checkAuth";
 export const revalidate = 0;
 
 async function getSponsorship(id: string) {
+
   const user = await authChecker();
   try {
     return await prisma.sponsorship.findUnique({
