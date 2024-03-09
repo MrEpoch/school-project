@@ -43,6 +43,8 @@ export async function POST(
     );
   }
 
+  console.log(params);
+
   try {
     const token_db = await prisma.password_reset.findUnique({
       where: {
@@ -56,9 +58,7 @@ export async function POST(
           id: token,
         },
       });
-    }
-
-    if (!token_db) {
+    } else {
       return NextResponse.json({ error: "Invalid token" }, { status: 400 });
     }
 

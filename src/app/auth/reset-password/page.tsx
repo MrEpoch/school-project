@@ -1,3 +1,4 @@
+import ErrorHandler from "@/components/ErrorHandler";
 import { lucia } from "@/lib/auth";
 import { cookies } from "next/headers";
 import Link from "next/link";
@@ -14,6 +15,7 @@ export default async function Page() {
 
   return (
     <div className="min-h-screen w-full dark:bg-darkmode-500">
+      <ErrorHandler />
       <div className="flex flex-col gap-10 items-center justify-center h-screen max-w-screen-xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
           Reset your password
@@ -34,7 +36,7 @@ export default async function Page() {
               name="email"
               type="email"
               id="reset_email"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-full p-2.5 dark:bg-darkmode-400 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
               placeholder="name@company.com"
               required
             />
