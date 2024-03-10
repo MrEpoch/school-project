@@ -1,3 +1,5 @@
+import ErrorHandler from "@/components/ErrorHandler";
+
 async function beSponsor(formData: FormData) {
   "use server";
 }
@@ -8,6 +10,7 @@ export default function Page() {
   return (
     <main className="min-h-screen w-full dark:bg-darkmode-500 py-12">
       <div className="flex flex-col gap-10 items-center justify-center h-screen max-w-screen-xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+        <ErrorHandler />
         <h3 className="text-xl font-bold mb-5">Please fill out the form</h3>
         <form action={beSponsor} className="max-w-sm mx-auto w-full">
           <div className="mb-5">

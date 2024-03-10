@@ -1,8 +1,10 @@
+import ErrorHandler from "@/components/ErrorHandler";
 import ImageComponents from "@/components/ImageComponents";
 
 export default function Page() {
   return (
     <div className="min-h-screen dark:bg-darkmode-500 dark:text-white/90">
+      <ErrorHandler />
       <div className="py-8 px-4 mx-auto max-w-2xl lg:py-16">
         <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
           Create sponsorship
@@ -21,6 +23,7 @@ export default function Page() {
                 type="text"
                 name="title"
                 id="name"
+                minLength={5}
                 className="bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-lime-600 focus:border-lime-600 block w-full p-2.5 dark:bg-darkmode-400  dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
                 placeholder="Type product name"
                 required
@@ -40,7 +43,7 @@ export default function Page() {
                 min={50}
                 id="price"
                 className="bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-lime-600 focus:border-lime-600 block w-full p-2.5 dark:bg-darkmode-400 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
-                placeholder="$29"
+                placeholder="$50"
                 required
               />
             </div>
@@ -54,6 +57,7 @@ export default function Page() {
               <input
                 type="date"
                 name="expires_at"
+    min={new Date().toISOString().split("T")[0]}
                 className="bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-lime-600 focus:border-lime-600 block w-full p-2.5 dark:bg-darkmode-400 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
                 placeholder="MM/DD/YYYY"
                 required
@@ -97,6 +101,7 @@ export default function Page() {
                 rows={8}
                 className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg focus:ring-lime-500 focus:border-lime-500 dark:bg-darkmode-400 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
                 placeholder="Your description here"
+    minLength={10}
               />
             </div>
           </div>

@@ -19,7 +19,7 @@ export async function authChecker() {
     redirect("/auth/login");
   }
   if (!user.email_verified) {
-    redirect("/auth/email-verify");
+    redirect("/auth/email-verify?error=not_verified");
   }
 
   return user;

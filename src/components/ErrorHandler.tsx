@@ -6,17 +6,28 @@ const error_kinds: any = {
   invalid_email: "Invalid email",
   invalid_password: "Invalid password",
   invalid_password_repeat: "Passwords do not match",
+
   already_verified: "Email is already verified",
   user_not_found: "User not found",
   unknown_error: "Unknown error",
+
   invalid_code: "Invalid email code",
   user_not_created: "Failed to create user",
   email_exists: "Email already exists",
+
   invalid_token: "Try again clicking the link in your email",
   invalid_category: "Choose a valid category",
   invalid_amount: "Enter a valid amount",
   invalid_image: "Upload a valid image",
+
   failed_to_delete: "Failed to delete",
+  not_verified: "Email not verified",
+
+  sponsorship_invalid_title: "Title must be at least 5 characters long",
+  sponsorship_invalid_description: "Description must be at least 10 characters long",
+  sponsorship_invalid_amount: "Amount must be at least $50",
+  sponsorship_invalid_category: "Choose a valid category",
+  sponsorship_invalid_expiration_date: "Choose a valid expiration date, max 1 year",
 };
 
 export default function ErrorHandler() {

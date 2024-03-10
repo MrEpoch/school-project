@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import DeleteButton from "./DeleteButton";
 import { authChecker } from "@/lib/checkAuth";
+import ErrorHandler from "@/components/ErrorHandler";
 
 export const revalidate = 0;
 
@@ -35,6 +36,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen dark:bg-darkmode-500 py-16">
+      <ErrorHandler />
       <div className="p-4 mx-auto max-w-screen-xl h-full w-full flex flex-col gap-[2rem]">
         <Image
           src={sponsorship.image_url}

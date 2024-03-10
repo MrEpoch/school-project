@@ -1,8 +1,11 @@
+import ErrorHandler from "@/components/ErrorHandler";
+
 export default async function Page({ params }: { params: { id: string } }) {
   const { id } = params;
 
   return (
     <main className="min-h-screen w-full dark:bg-darkmode-500">
+      <ErrorHandler />
       <div className="flex flex-col gap-10 items-center justify-center h-screen max-w-screen-xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
           Reset your password

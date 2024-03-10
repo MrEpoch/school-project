@@ -1,3 +1,4 @@
+import ErrorHandler from "@/components/ErrorHandler";
 import { lucia } from "@/lib/auth";
 import { cookies } from "next/headers";
 import Link from "next/link";
@@ -15,6 +16,7 @@ export default async function Page() {
 
   return (
     <div className="min-h-screen w-full dark:bg-darkmode-500">
+      <ErrorHandler />
       <div className="flex flex-col gap-10 items-center justify-center h-screen max-w-screen-xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 md:text-4xl lg:text-5xl dark:text-white">
           Check your email for code

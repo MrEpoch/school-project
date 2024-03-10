@@ -29,7 +29,7 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
   const formData = await req.formData();
   if (!formData.get("expires_at")) {
     return NextResponse.redirect(
-      requestUrl.origin + "/auth/sponsorships/create?error=invalid_date",
+      requestUrl.origin + "/auth/sponsorship/create?error=invalid_date",
       { status: 400 },
     );
   }
@@ -38,7 +38,7 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
     moment(formData.get("expires_at") as string).toDate();
   } catch (error) {
     return NextResponse.redirect(
-      requestUrl.origin + "/auth/sponsorships/create?error=invalid_date",
+      requestUrl.origin + "/auth/sponsorship/create?error=invalid_date",
       { status: 400 },
     );
   }
@@ -54,47 +54,72 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
     ).toDate(),
   };
 
-  const createSponsorshipSchema = z.object({
-    title: z.string().min(5),
-    description: z.string().min(10),
-    amount: z.string().min(1),
-    category: z.string().max(10).min(5),
-    expiration_date: z
-      .date()
-      .min(new Date())
-      .max(new Date(new Date().setFullYear(new Date().getFullYear() + 1))),
-  });
+  const titleZod = z.string().min(5);
+  const descriptionZod = z.string().min(10);
+  const amountZod = z.string().min(2).max(6);
+  const categoryZod = z.string().max(10).min(5);
+  const expiration_dateZod = z
+    .date()
+    .min(new Date())
+    .max(new Date(new Date().setFullYear(new Date().getFullYear() + 1)));
 
-  const result = createSponsorshipSchema.safeParse(processedData);
+  const title = titleZod.safeParse(processedData.title);
+  const description = descriptionZod.safeParse(processedData.description);
+  const amount = amountZod.safeParse(processedData.amount);
+  const category = categoryZod.safeParse(processedData.category);
+  const expiration_date = expiration_dateZod.safeParse(
+    processedData.expiration_date,
+  )
 
-  if (!result.success) {
-    console.log(result.error);
-    console.log(result.error.flatten().fieldErrors);
-    return NextResponse.json(
-      {
-        error: result.error.flatten().fieldErrors,
-      },
-      { status: 400 },
-    );
+  if (!title.success) {
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorship/create?error=sponsorship_invalid_title",
+    )
+  } else if (!description.success) {
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorship/create?error=sponsorship_invalid_description",
+    )
+  } else if (!amount.success) {
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorship/create?error=sponsorship_invalid_amount",
+    )
+  } else if (!category.success) {
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorship/create?error=sponsorship_invalid_category",
+    )
+  } else if (!expiration_date.success) {
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorship/create?error=sponsorship_invalid_expiration_date",
+    )
   }
 
-  if (Number.isNaN(Number.parseFloat(result.data.amount))) {
+  if (Number.isNaN(Number.parseFloat(amount.data))) {
     return NextResponse.redirect(
-      requestUrl.origin + "/auth/sponsorships/create?error=invalid_amount",
+      requestUrl.origin + "/auth/sponsorship/create?error=invalid_amount",
       { status: 400 },
     );
   }
 
   if (
     !(
-      result.data.category === "other" ||
-      result.data.category === "cosmetics" ||
-      result.data.category === "fashion" ||
-      result.data.category === "technology"
+      category.data === "other" ||
+      category.data === "cosmetics" ||
+      category.data === "fashion" ||
+      category.data === "technology"
     )
   ) {
     return NextResponse.redirect(
-      requestUrl.origin + "/auth/sponsorships/create?error=invalid_category",
+      requestUrl.origin + "/auth/sponsorship/create?error=invalid_category",
+      { status: 400 },
+    );
+  }
+
+  if (
+    Number.parseFloat(amount.data) < 50 ||
+    Number.parseFloat(amount.data) > 100000
+  ) {
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorship/create?error=invalid_amount",
       { status: 400 },
     );
   }
@@ -103,7 +128,7 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
 
   if (!image) {
     return NextResponse.redirect(
-      requestUrl.origin + "/auth/sponsorships/create?error=invalid_image",
+      requestUrl.origin + "/auth/sponsorship/create?error=invalid_image",
       { status: 400 },
     );
   }
@@ -134,12 +159,12 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
         image_url,
         image_id,
         image_signature,
-        title: result.data.title,
-        description: result.data.description,
-        amount: parseFloat(parseFloat(result.data.amount).toFixed(2)),
         sponsorId: user.id,
-        category: result.data.category,
-        expires_at: result.data.expiration_date,
+        title: title.data,
+        description: description.data,
+        amount: parseFloat(parseFloat(amount.data).toFixed(2)),
+        category: category.data,
+        expires_at: expiration_date.data
       },
     });
     // creating a new card
@@ -147,7 +172,7 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
   } catch (error) {
     console.log(error);
     return NextResponse.redirect(
-      requestUrl.origin + "/auth/sponsorships/create?error=unknown_error",
+      requestUrl.origin + "/auth/sponsorship/create?error=unknown_error",
       { status: 400 },
     );
   }

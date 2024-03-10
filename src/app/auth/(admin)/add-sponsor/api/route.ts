@@ -5,12 +5,14 @@ import { z } from "zod";
 
 export async function POST(req: NextRequest) {
   const remaining = await limiter.removeTokens(1);
+  const requestUrl = new URL(req.url);
 
   if (remaining < 0) {
-    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    return NextResponse.redirect(requestUrl.origin + "/too-many-requests", {
+      status: 429,
+    });
   }
 
-  const requestUrl = new URL(req.url);
   const formData = await req.formData();
 
   const email = formData.get("email");
@@ -20,7 +22,7 @@ export async function POST(req: NextRequest) {
   const emailResult = emailZod.safeParse(email);
 
   if (!emailResult.success) {
-    return NextResponse.json({ error: "Invalid email" }, { status: 400 });
+    return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship?error=invalid_email");
   }
 
   try {
@@ -31,7 +33,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (!dbUser) {
-      return NextResponse.json({ error: "User not found" }, { status: 500 });
+      return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship?error=user_not_found");
     }
 
     await prisma.user.update({
@@ -45,9 +47,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship");
   } catch {
-    return NextResponse.json(
-      { error: "Something went wrong" },
-      { status: 500 },
-    );
+    return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship?error=unknown_error");
   }
 }
