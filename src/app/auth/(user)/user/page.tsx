@@ -109,17 +109,26 @@ export default async function Page() {
           </table>
         </div>
         <div className="w-full flex justify-end gap-6">
-        <Link className="bg-black  text-white hover:bg-lime-500 transition rounded p-4" href="/auth/user/sponsor-request">Become sponsor</Link>
           <Link
-          href="/auth/user/sponsorships"
-          className="bg-black  text-white hover:bg-lime-500 transition rounded p-4"
+            className="bg-black  text-white hover:bg-lime-500 transition rounded p-4"
+            href="/auth/user/sponsor-request"
+          >
+            Become sponsor
+          </Link>
+          <Link
+            href="/auth/user/sponsorships"
+            className="bg-black  text-white hover:bg-lime-500 transition rounded p-4"
+          >
+            View all
+          </Link>
+        </div>
+        <form
+          className="w-full flex justify-end"
+          method="POST"
+          action="/auth/api/logout"
         >
-          View all
-        </Link>
-      </div>
-        <form className="w-full flex justify-end" method="POST" action="/auth/api/logout">
           <button
-    className="dark:bg-red-600 bg-red-500 dark:hover:bg-red-700 hover:bg-red-700 dark:text-white font-bold p-4 transition rounded-lg"
+            className="dark:bg-red-600 bg-red-500 dark:hover:bg-red-700 hover:bg-red-700 dark:text-white font-bold p-4 transition rounded-lg"
             type="submit"
           >
             <svg
@@ -131,7 +140,7 @@ export default async function Page() {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-    fill="currentColor"
+                fill="currentColor"
                 d="M12 12H19M19 12L16 15M19 12L16 9"
                 stroke="currentColor"
                 strokeWidth="2"

@@ -37,13 +37,19 @@ router.use(multer().any()).put(async (req: NextRequestWithParams) => {
 
   const formData = await req.formData();
   if (!formData.get("expires_at")) {
-    return NextResponse.json({ error: "No expiration" }, { status: 400 });
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorships/update?error=invalid_date",
+      { status: 400 },
+    );
   }
 
   try {
     moment(formData.get("expires_at") as string).toDate();
   } catch (error) {
-    return NextResponse.json({ error: "Invalid date" }, { status: 400 });
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorships/update?error=invalid_date",
+      { status: 400 },
+    );
   }
 
   const processedData = {
@@ -207,14 +213,15 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } },
 ) {
-
   const remaining = await limiter.removeTokens(1);
+  const requestUrl = new URL(req.url);
 
   if (remaining < 0) {
-    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    return NextResponse.redirect(requestUrl.origin + "/too-many-requests", {
+      status: 429,
+    });
   }
 
-  const requestUrl = new URL(req.url);
   const sessionId = cookies().get("session")?.value;
   if (!sessionId) {
     return NextResponse.redirect(requestUrl.origin + "/auth/login");
@@ -236,6 +243,11 @@ export async function DELETE(
 
   if (deleted) {
     await cloudinary.v2.uploader.destroy(deleted.image_id as string);
+  } else {
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorship?error=failed_to_delete",
+      { status: 400 },
+    );
   }
 
   return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship");

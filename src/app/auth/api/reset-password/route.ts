@@ -9,11 +9,13 @@ import { limiter } from "@/lib/Limiter";
 export async function POST(request: Request) {
   const remaining = await limiter.removeTokens(1);
 
+  const requestUrl = new URL(request.url);
   if (remaining < 0) {
-    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    return NextResponse.redirect(requestUrl.origin + "/too-many-requests", {
+      status: 429,
+    });
   }
 
-  const requestUrl = new URL(request.url);
   const formData = await request.formData();
   const email = formData.get("email");
 
@@ -23,18 +25,28 @@ export async function POST(request: Request) {
 
   if (!emailResult.success) {
     console.log("false mail");
-    return NextResponse.json({ error: "Invalid email" }, { status: 400 });
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/reset-password?error=invalid_email",
+      { status: 400 },
+    );
   }
 
   try {
     const user = await getUser(emailResult.data);
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 500 });
+      return NextResponse.redirect(
+        requestUrl.origin + "/auth/reset-password?error=user_not_found",
+        {
+          status: 301,
+        },
+      );
     } else if (!user.email_verified_value) {
-      return NextResponse.json(
-        { error: "Email not verified" },
-        { status: 400 },
+      return NextResponse.redirect(
+        requestUrl.origin + "/auth/reset-password?error=not_verified",
+        {
+          status: 301,
+        },
       );
     }
 
@@ -58,15 +70,9 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.log(error);
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2002") {
-        return NextResponse.redirect(
-          requestUrl.origin + "/signup?error=email_exists",
-          {
-            status: 301,
-          },
-        );
-      }
-    }
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/reset-password?error=unknown_error",
+      { status: 500 },
+    );
   }
 }

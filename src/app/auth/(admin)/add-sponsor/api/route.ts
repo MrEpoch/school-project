@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 export async function POST(req: NextRequest) {
-
   const remaining = await limiter.removeTokens(1);
 
   if (remaining < 0) {

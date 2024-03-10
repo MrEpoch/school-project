@@ -1,7 +1,6 @@
 import { limiter } from "@/lib/Limiter";
 import { lucia } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { Prisma } from "@prisma/client";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { Argon2id } from "oslo/password";
@@ -11,14 +10,15 @@ export async function POST(
   request: Request,
   { params }: { params: { slug: string } },
 ) {
-
   const remaining = await limiter.removeTokens(1);
+  const requestUrl = new URL(request.url);
 
   if (remaining < 0) {
-    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    return NextResponse.redirect(requestUrl.origin + "/too-many-requests", {
+      status: 429,
+    });
   }
 
-  const requestUrl = new URL(request.url);
   const formData = await request.formData();
   const password = formData.get("password");
   const repeat_password = formData.get("repeat_password");
@@ -28,20 +28,6 @@ export async function POST(
 
   const passwordResult = passwordZod.safeParse(password);
   const repeatPasswordResult = passwordZod.safeParse(repeat_password);
-
-  if (!passwordResult.success) {
-    return NextResponse.json({ error: "Invalid password" }, { status: 400 });
-  } else if (!repeatPasswordResult.success) {
-    return NextResponse.json(
-      { error: "Invalid repeat password" },
-      { status: 400 },
-    );
-  } else if (passwordResult.data !== repeatPasswordResult.data) {
-    return NextResponse.json(
-      { error: "Passwords do not match" },
-      { status: 400 },
-    );
-  }
 
   console.log(params);
 
@@ -53,13 +39,42 @@ export async function POST(
     });
 
     if (token_db) {
+      if (!passwordResult.success) {
+        return NextResponse.redirect(
+          requestUrl.origin +
+            "/auth/reset-password/verify/" +
+            token +
+            "?error=invalid_password",
+          { status: 400 },
+        );
+      } else if (!repeatPasswordResult.success) {
+        return NextResponse.redirect(
+          requestUrl.origin +
+            "/auth/reset-password/verify/" +
+            token +
+            "?error=invalid_repeat_password",
+          { status: 400 },
+        );
+      } else if (passwordResult.data !== repeatPasswordResult.data) {
+        return NextResponse.redirect(
+          requestUrl.origin +
+            "/auth/reset-password/verify/" +
+            token +
+            "?error=invalid_repeat_password",
+          { status: 400 },
+        );
+      }
+
       await prisma.password_reset.delete({
         where: {
           id: token,
         },
       });
     } else {
-      return NextResponse.json({ error: "Invalid token" }, { status: 400 });
+      return NextResponse.redirect(
+        requestUrl.origin + "/auth/reset-password/verify/?error=invalid_token",
+        { status: 400 },
+      );
     }
 
     const user = await prisma.user.findUnique({
@@ -69,7 +84,10 @@ export async function POST(
     });
 
     if (!user) {
-      return NextResponse.json({ error: "Unknown user" }, { status: 400 });
+      return NextResponse.redirect(
+        requestUrl.origin + "/auth/reset-password/verify/?error=user_not_found",
+        { status: 400 },
+      );
     }
 
     await lucia.invalidateUserSessions(user.id);
@@ -92,15 +110,12 @@ export async function POST(
     });
   } catch (error) {
     console.log(error);
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2002") {
-        return NextResponse.redirect(
-          requestUrl.origin + "/signup?error=email_exists",
-          {
-            status: 301,
-          },
-        );
-      }
-    }
+    return NextResponse.redirect(
+      requestUrl.origin +
+        "/auth/reset-password/verify/" +
+        token +
+        "?error=unknown_error",
+      { status: 400 },
+    );
   }
 }

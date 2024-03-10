@@ -33,7 +33,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         </h2>
         <form
           method="POST"
-          action="/auth/sponsorship/api"
+          action={`/auth/sponsorship/api/param/${params.id}`}
           encType="multipart/form-data"
         >
           <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">

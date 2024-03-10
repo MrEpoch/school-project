@@ -9,14 +9,15 @@ import { lucia } from "@/lib/auth";
 import { limiter } from "@/lib/Limiter";
 
 export async function POST(request: Request) {
-
   const remaining = await limiter.removeTokens(1);
+  const requestUrl = new URL(request.url);
 
   if (remaining < 0) {
-    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    return NextResponse.redirect(requestUrl.origin + "/too-many-requests", {
+      status: 429,
+    });
   }
 
-  const requestUrl = new URL(request.url);
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
@@ -30,17 +31,23 @@ export async function POST(request: Request) {
   const password2Result = z.string().min(8).safeParse(password2);
 
   if (!emailResult.success) {
-    return NextResponse.json({ error: "Invalid email" }, { status: 400 });
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/signup?error=invalid_email",
+      { status: 400 },
+    );
   } else if (!passwordResult.success) {
-    return NextResponse.json({ error: "Invalid password" }, { status: 400 });
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/signup?error=invalid_password",
+      { status: 400 },
+    );
   } else if (!password2Result.success) {
-    return NextResponse.json(
-      { error: "Confirm password is invalid" },
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/signup?error=invalid_password_repeat",
       { status: 400 },
     );
   } else if (passwordResult.data !== password2Result.data) {
-    return NextResponse.json(
-      { error: "Passwords do not match" },
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/signup?error=invalid_password_repeat",
       { status: 400 },
     );
   }
@@ -49,9 +56,9 @@ export async function POST(request: Request) {
     const user = await createUser(emailResult.data, passwordResult.data);
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User creation failed" },
-        { status: 500 },
+      return NextResponse.redirect(
+        requestUrl.origin + "/auth/signup?error=user_not_created",
+        { status: 400 },
       );
     }
 
@@ -74,7 +81,6 @@ export async function POST(request: Request) {
       status: 301,
     });
   } catch (error) {
-    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") {
         return NextResponse.redirect(
@@ -85,5 +91,9 @@ export async function POST(request: Request) {
         );
       }
     }
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/signup?error=user_not_created",
+      { status: 400 },
+    );
   }
 }

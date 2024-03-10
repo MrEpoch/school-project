@@ -1,11 +1,8 @@
-
 import { Redis } from "ioredis";
 
-export const redis = new Redis({  });
+export const redis = new Redis({});
 
-redis.on('error', (err) => {
-  
-});
+redis.on("error", (err) => {});
 
 export async function setCache(key: string, value: string, expire: number) {
   try {

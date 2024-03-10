@@ -18,25 +18,29 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
   const requestUrl = new URL(req.url);
 
   if (!sessionId) {
-    console.log("No id");
     return NextResponse.redirect(requestUrl.origin + "/auth/login");
   }
 
   const { user } = await lucia.validateSession(sessionId);
   if (!user) {
-    console.log("No user");
     return NextResponse.redirect(requestUrl.origin + "/auth/login");
   }
 
   const formData = await req.formData();
   if (!formData.get("expires_at")) {
-    return NextResponse.json({ error: "No expiration" }, { status: 400 });
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorships/create?error=invalid_date",
+      { status: 400 },
+    );
   }
 
   try {
     moment(formData.get("expires_at") as string).toDate();
   } catch (error) {
-    return NextResponse.json({ error: "Invalid date" }, { status: 400 });
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorships/create?error=invalid_date",
+      { status: 400 },
+    );
   }
 
   const processedData = {
@@ -65,6 +69,7 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
 
   if (!result.success) {
     console.log(result.error);
+    console.log(result.error.flatten().fieldErrors);
     return NextResponse.json(
       {
         error: result.error.flatten().fieldErrors,
@@ -74,10 +79,8 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
   }
 
   if (Number.isNaN(Number.parseFloat(result.data.amount))) {
-    return NextResponse.json(
-      {
-        error: "Amount must be a number",
-      },
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorships/create?error=invalid_amount",
       { status: 400 },
     );
   }
@@ -90,10 +93,8 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
       result.data.category === "technology"
     )
   ) {
-    return NextResponse.json(
-      {
-        error: "Invalid category",
-      },
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorships/create?error=invalid_category",
       { status: 400 },
     );
   }
@@ -101,7 +102,10 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
   const image = formData.get("image") as File;
 
   if (!image) {
-    return NextResponse.json({ error: "No image" }, { status: 400 });
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorships/create?error=invalid_image",
+      { status: 400 },
+    );
   }
 
   const parser = new DatauriParser();
@@ -109,7 +113,6 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
   try {
     // create image
     const createImage = async (img: any) => {
-      console.log(img);
       const base64Image = parser.format(
         path.extname(img.name).toString(),
         await img.arrayBuffer(),
@@ -143,7 +146,10 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
     return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship");
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ error, data: null }, { status: 500 });
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorships/create?error=unknown_error",
+      { status: 400 },
+    );
   }
 });
 export const config = {
@@ -154,9 +160,12 @@ export const config = {
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const remaining = await limiter.removeTokens(1);
+  const requestUrl = new URL(req.url);
 
   if (remaining < 0) {
-    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    return NextResponse.redirect(requestUrl.origin + "/too-many-requests", {
+      status: 429,
+    });
   }
 
   return router.run(req, res);

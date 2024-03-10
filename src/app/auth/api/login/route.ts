@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { z } from "zod";
@@ -12,7 +11,9 @@ export async function POST(request: NextRequest) {
   const requestUrl = new URL(request.url);
 
   if (remaining < 0) {
-    return NextResponse.redirect(requestUrl.origin + "/too-many-requests", { status: 429 });
+    return NextResponse.redirect(requestUrl.origin + "/too-many-requests", {
+      status: 429,
+    });
   }
 
   const formData = await request.formData();
@@ -27,23 +28,32 @@ export async function POST(request: NextRequest) {
 
   if (!emailResult.success) {
     console.log("false mail");
-    return NextResponse.redirect(requestUrl.origin + "/auth/login?error=invalid_email", {
-     status: 301, 
-    });
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/login?error=invalid_email",
+      {
+        status: 301,
+      },
+    );
   } else if (!passwordResult.success) {
     console.log("false password");
-    return NextResponse.redirect(requestUrl.origin + "/auth/login?error=invalid_password", {
-      status: 301,
-    })
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/login?error=invalid_password",
+      {
+        status: 301,
+      },
+    );
   }
 
   try {
     const user = await getUser(emailResult.data);
 
     if (!user) {
-      return NextResponse.redirect(requestUrl.origin + "/auth/login?error=user_not_found", {
-        status: 301,
-      });
+      return NextResponse.redirect(
+        requestUrl.origin + "/auth/login?error=user_not_found",
+        {
+          status: 301,
+        },
+      );
     }
 
     const validPassword = await new Argon2id().verify(
@@ -52,9 +62,12 @@ export async function POST(request: NextRequest) {
     );
 
     if (!validPassword) {
-      return NextResponse.redirect(requestUrl.origin + "/auth/login?error=invalid_password", {
-        status: 301,
-      })
+      return NextResponse.redirect(
+        requestUrl.origin + "/auth/login?error=invalid_password",
+        {
+          status: 301,
+        },
+      );
     }
 
     const session = await lucia.createSession(user.id, {});
@@ -66,6 +79,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.log(error);
-    return NextResponse.redirect(requestUrl.origin + "/auth/login?error=unknown_error", { status: 500 });
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/login?error=unknown_error",
+      { status: 500 },
+    );
   }
 }
