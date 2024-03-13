@@ -24,10 +24,12 @@ const error_kinds: any = {
   not_verified: "Email not verified",
 
   sponsorship_invalid_title: "Title must be at least 5 characters long",
-  sponsorship_invalid_description: "Description must be at least 10 characters long",
+  sponsorship_invalid_description:
+    "Description must be at least 10 characters long",
   sponsorship_invalid_amount: "Amount must be at least $50",
   sponsorship_invalid_category: "Choose a valid category",
-  sponsorship_invalid_expiration_date: "Choose a valid expiration date, max 1 year",
+  sponsorship_invalid_expiration_date:
+    "Choose a valid expiration date, max 1 year",
 };
 
 export default function ErrorHandler() {

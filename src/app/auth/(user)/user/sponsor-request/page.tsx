@@ -1,7 +1,54 @@
 import ErrorHandler from "@/components/ErrorHandler";
+import { sendMail } from "@/lib/SendMail";
+import { authChecker } from "@/lib/checkAuth";
+import { prisma } from "@/lib/db";
+import { redirect } from "next/navigation";
+import { z } from "zod";
 
 async function beSponsor(formData: FormData) {
   "use server";
+
+  const email = formData.get("email");
+  const message = formData.get("message");
+  const phone = formData.get("phone");
+
+  const emailZod = z.string().email();
+  const messageZod = z.string().min(10);
+  const phoneZod = z.string().min(10).max(10);
+
+  const parsedEmail = emailZod.safeParse(email);
+  const parsedMessage = messageZod.safeParse(message);
+  const parsedPhone = phoneZod.safeParse(phone);
+
+  if (!parsedEmail.success) {
+    redirect("/auth/user/sponsor-request?error=invalid_email");
+  } else if (!parsedMessage.success) {
+    redirect("/auth/user/sponsor-request?error=invalid_message");
+  } else if (!parsedPhone.success) {
+    redirect("/auth/user/sponsor-request?error=invalid_phone");
+  }
+
+  try {
+    await sendMail({
+      to: process.env.MAIL_TO,
+      subject: "Sponsorship Request",
+      text: message + "\n\n" + email,
+    });
+
+    const user = await authChecker();
+
+    const beSponsor = await prisma.beSponsorRequest.create({
+      data: {
+        company_email: parsedEmail.data,
+        company_phone: parsedPhone.data,
+        userId: user.id,
+      },
+    });
+
+    redirect("/auth/user/sponsor-request/success");
+  } catch (e) {
+    redirect("/auth/user/sponsor-request?error=unknown_error");
+  }
 }
 
 // Later i will add some cookies throttle to prevent spam
@@ -28,6 +75,24 @@ export default function Page() {
               required
             />
           </div>
+          {/* Phone number then company name */}
+          <div className="mb-5">
+            <label
+              htmlFor="phone"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Phone
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
+              placeholder="123-456-789"
+              required
+            />
+          </div>
           <div className="mb-5">
             <label
               htmlFor="message"
@@ -37,9 +102,11 @@ export default function Page() {
             </label>
             <textarea
               id="message"
+              name="message"
               rows={4}
+              minLength={10}
               className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Leave a comment..."
+              placeholder="Write some info to process your be sponsor request..."
             ></textarea>
           </div>
           <button

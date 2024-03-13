@@ -49,7 +49,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 id="name"
                 value={sponsorship.title}
                 className="bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-lime-600 focus:border-lime-600 block w-full p-2.5 dark:bg-darkmode-400  dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"
-    minLength={5}
+                minLength={5}
                 placeholder="Type product name"
                 required
               />
@@ -90,7 +90,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                     .toISOString()
                     .split("T")[0]
                 }
-    min={moment().toISOString().split("T")[0]}
+                min={moment().toISOString().split("T")[0]}
                 placeholder="MM/DD/YYYY"
                 required
               />
@@ -146,7 +146,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               <textarea
                 id="description"
                 name="description"
-    minLength={10}
+                minLength={10}
                 rows={8}
                 value={sponsorship.description}
                 className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg focus:ring-lime-500 focus:border-lime-500 dark:bg-darkmode-400 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500"

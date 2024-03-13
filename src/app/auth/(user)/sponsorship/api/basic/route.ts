@@ -69,28 +69,33 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
   const category = categoryZod.safeParse(processedData.category);
   const expiration_date = expiration_dateZod.safeParse(
     processedData.expiration_date,
-  )
+  );
 
   if (!title.success) {
     return NextResponse.redirect(
-      requestUrl.origin + "/auth/sponsorship/create?error=sponsorship_invalid_title",
-    )
+      requestUrl.origin +
+        "/auth/sponsorship/create?error=sponsorship_invalid_title",
+    );
   } else if (!description.success) {
     return NextResponse.redirect(
-      requestUrl.origin + "/auth/sponsorship/create?error=sponsorship_invalid_description",
-    )
+      requestUrl.origin +
+        "/auth/sponsorship/create?error=sponsorship_invalid_description",
+    );
   } else if (!amount.success) {
     return NextResponse.redirect(
-      requestUrl.origin + "/auth/sponsorship/create?error=sponsorship_invalid_amount",
-    )
+      requestUrl.origin +
+        "/auth/sponsorship/create?error=sponsorship_invalid_amount",
+    );
   } else if (!category.success) {
     return NextResponse.redirect(
-      requestUrl.origin + "/auth/sponsorship/create?error=sponsorship_invalid_category",
-    )
+      requestUrl.origin +
+        "/auth/sponsorship/create?error=sponsorship_invalid_category",
+    );
   } else if (!expiration_date.success) {
     return NextResponse.redirect(
-      requestUrl.origin + "/auth/sponsorship/create?error=sponsorship_invalid_expiration_date",
-    )
+      requestUrl.origin +
+        "/auth/sponsorship/create?error=sponsorship_invalid_expiration_date",
+    );
   }
 
   if (Number.isNaN(Number.parseFloat(amount.data))) {
@@ -164,7 +169,7 @@ router.use(multer().any()).post(async (req: NextRequest, res: NextResponse) => {
         description: description.data,
         amount: parseFloat(parseFloat(amount.data).toFixed(2)),
         category: category.data,
-        expires_at: expiration_date.data
+        expires_at: expiration_date.data,
       },
     });
     // creating a new card

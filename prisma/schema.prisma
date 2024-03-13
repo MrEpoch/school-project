@@ -40,7 +40,6 @@ model beSponsorRequest {
   updated_at DateTime @default(now())
 
   userId          String
-  company_name    String
   company_phone   String
   company_email   String
 

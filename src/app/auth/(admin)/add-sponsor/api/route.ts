@@ -22,7 +22,9 @@ export async function POST(req: NextRequest) {
   const emailResult = emailZod.safeParse(email);
 
   if (!emailResult.success) {
-    return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship?error=invalid_email");
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorship?error=invalid_email",
+    );
   }
 
   try {
@@ -33,7 +35,9 @@ export async function POST(req: NextRequest) {
     });
 
     if (!dbUser) {
-      return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship?error=user_not_found");
+      return NextResponse.redirect(
+        requestUrl.origin + "/auth/sponsorship?error=user_not_found",
+      );
     }
 
     await prisma.user.update({
@@ -47,6 +51,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship");
   } catch {
-    return NextResponse.redirect(requestUrl.origin + "/auth/sponsorship?error=unknown_error");
+    return NextResponse.redirect(
+      requestUrl.origin + "/auth/sponsorship?error=unknown_error",
+    );
   }
 }
