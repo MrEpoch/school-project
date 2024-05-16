@@ -37,14 +37,13 @@ async function beSponsor(formData: FormData) {
 
     const user = await authChecker();
 
-    const beSponsor = await prisma.beSponsorRequest.create({
+    await prisma.beSponsorRequest.create({
       data: {
         company_email: parsedEmail.data,
         company_phone: parsedPhone.data,
         userId: user.id,
       },
     });
-
     redirect("/auth/user/sponsor-request/success");
   } catch (e) {
     redirect("/auth/user/sponsor-request?error=unknown_error");

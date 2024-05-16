@@ -5,7 +5,7 @@ import nodemailer from "nodemailer";
 export async function sendMail({ to, subject, text }) {
   try {
     let mailOptions = {
-      from: "noreply@localhost.com",
+      from: process.env.EMAIL_FROM,
       to,
       subject,
       text,
